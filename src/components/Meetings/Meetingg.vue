@@ -41,7 +41,9 @@
                         <template v-if ="userIsCreator">
                             <app-edit-meeting-details-dialog :meeting="meeting"></app-edit-meeting-details-dialog>
                         </template>
-                        <app-meeting-register-dialog :meetingId ="meeting.id" v-if = "userIsAuthenticated && userIsCreator"
+                    </v-card-actions>
+                    <v-card-actions>
+                        <app-meeting-register-dialog :meetingId ="meeting.id" v-if = "userIsAuthenticated && !userIsCreator" class = "registration"
                         ></app-meeting-register-dialog>
                     </v-card-actions>
                 </v-card>
@@ -71,3 +73,8 @@
         }
     }
 </script>
+<style>
+    .registration{
+        text-align: center;
+    }
+</style>
