@@ -1,11 +1,17 @@
 <template>
     <v-container>
         <v-layout row wrap class>
-            <v-flex xs12 sm6 class="text-center text-sm-right">
+            <v-flex  sm3 class="text-center ">
                 <v-btn large router to ="/meetings" color="lime lighten-4">Explore Meetings</v-btn>
             </v-flex>
-            <v-flex xs12 sm6 class="text-center text-sm-left">
+            <v-flex  sm3 class="text-center ">
                 <v-btn large router to ="createMeeting" color="lime lighten-4">Organize Meeting</v-btn>
+            </v-flex>
+            <v-flex  sm3 class="text-center ">
+                <v-btn large router to ="/reviews" color="lime lighten-4">View Reviews</v-btn>
+            </v-flex>
+            <v-flex  sm3 class="text-center ">
+                <v-btn large router to ="createReview" color="lime lighten-4">Create Review</v-btn>
             </v-flex>
         </v-layout>
         <v-layout>
