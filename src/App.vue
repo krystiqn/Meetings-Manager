@@ -53,37 +53,45 @@
     </div>
     <main>
       <router-view></router-view>
+      <MeetingReminder
+              :meetings="meetings"
+              :meetingReminderVisibility="meetingReminderVisibility"
+              v-on:closeMeetingReminder="closeMeetingReminder"
+      />
     </main>
   </v-app>
 </template>
 
 <script>
-
-
+  import {mapState} from "vuex";
+  import * as firebase from 'firebase'
+  import MeetingReminder from "./components/Meetings/MeetingReminder";
   export default {
     name: 'App',
 
     components: {
+      MeetingReminder
       //
     },
 
     data: () => ({
+      meetings: [],
+      meetingReminderVisibility: false,
       sideNav: false
     }),
     computed:{
+      ...mapState(['user']),
       menuItems(){
         let menuItems = [
-            {icon: 'mdi-face', title: 'Sign up', link: '/signup'},
-            {icon: 'mdi-pen-plus', title: 'Sign in', link: '/signin'},
-                ]
+          {icon: 'mdi-face', title: 'Sign up', link: '/signup'},
+          {icon: 'mdi-pen-plus', title: 'Sign in', link: '/signin'},
+        ]
         if (this.userIsAuthenticated) {
           menuItems = [
-              {icon: 'mdi-calendar', title: 'View meetings', link: '/meetings'},
-              {icon: 'mdi-map-marker-outline', title: 'Organize meeting', link: '/createMeeting'},
-              {icon: 'mdi-format-list-bulleted', title: 'View reviews', link: '/reviews'},
-              {icon: 'mdi-comment-outline', title: 'Review location', link: '/createReview'},
-              {icon: 'mdi-account', title: 'Profile', link: '/profile'},
-              {icon: 'mdi-google-maps', title: 'Map', link: '/map'},
+            {icon: 'mdi-calendar', title: 'View meetings', link: '/meetings'},
+            {icon: 'mdi-map-marker-outline', title: 'Organize meeting', link: '/createMeeting'},
+            {icon: 'mdi-account', title: 'Profile', link: '/profile'},
+            {icon: 'mdi-google-maps', title: 'Map', link: '/map'},
           ]
         }
         return menuItems
@@ -93,9 +101,59 @@
       }
     },
     methods:{
+      closeMeetingReminder (value) {
+        this.meetingReminderVisibility = value
+      },
+      formatDate (date) {
+        const d = date
+        let month = '' + (d.getMonth() + 1)
+        let day = '' + d.getDate()
+        const year = d.getFullYear()
+
+        if (month.length < 2) {
+          month = '0' + month
+        }
+        if (day.length < 2) {
+          day = '0' + day
+        }
+        return [year, month, day].join('-')
+      },
       onLogout(){
-      this.$store.dispatch('logout')
+        this.$store.dispatch('logout')
+      }
+    },
+    watch: {
+      user: {
+        handler: function (value) {
+          if (value !== null) {
+            if (value.registeredMeetings.length > 0) {
+              value.registeredMeetings.forEach(meeting => {
+                firebase.database().ref('meetings').once('value')
+                        .then((data)=>{
+                          const today = this.formatDate(new Date())
+                          const obj = data.val()
+                          for(let key in obj){
+                            if (meeting === key && obj[key].date.substring(0, 10) === today) {
+                              this.meetings.push({
+                                title: obj[key].title,
+                                date: obj[key].date.substring(11, 16),
+                                location: obj[key].location
+                              })
+                            }
+                          }
+                          if (this.meetings.length > 0) {
+                            this.meetingReminderVisibility = true
+                          }
+                        })
+                        .catch((error)=>{
+                          console.log(error)
+                        })
+              })
+            }
+          }
+        },
+        deep: true
+      }
     }
-  }
   };
 </script>

@@ -7,69 +7,60 @@ Vue.use(Vuex)
 export const store = new Vuex.Store({
     state: {
         loadedMeetings: [],
-        loadedReviews: [],
         user: null,
         loading: false,
         error: null,
     },
     mutations: {
-        registerUserForMeeting(state, payload) {
+        registerUserForMeeting(state, payload){
             const id = payload.id
-            if (state.user.registeredMeetings.findIndex(meeting => meeting.id === id) >= 0) {
+            if (state.user.registeredMeetings.findIndex(meeting => meeting.id === id)>=0) {
                 return
             }
             state.user.registeredMeetings.push(id)
             state.user.fbKeys[id] = payload.fbKey
         },
-        unregisterUserFromMeeting(state, payload) {
+        unregisterUserFromMeeting (state, payload) {
             const registeredMeetings = state.user.registeredMeetings
             registeredMeetings.splice(registeredMeetings.findIndex(meeting => meeting.id === payload), 1)
             Reflect.deleteProperty(state.user.fbKeys, payload)
         },
-        setLoadedMeeting(state, payload) {
+        setLoadedMeeting(state, payload){
             state.loadedMeetings = payload
         },
-        createMeeting(state, payload) {
+        createMeeting (state, payload){
             state.loadedMeetings.push(payload)
         },
-        setUser(state, payload) {
+        setUser(state, payload){
             state.user = payload
         },
-        setLoading(state, payload) {
+        setLoading(state, payload){
             state.loading = payload
         },
-        setError(state, payload) {
+        setError(state, payload){
             state.error = payload
         },
-        clearError(state) {
+        clearError(state){
             state.error = null
         },
-        setCreatedMeetingKey(state, payload) {
+        setCreatedMeetingKey (state, payload) {
             state.createdMeetingKey = payload
         },
-        updateMeeting(state, payload) {
-            const meeting = state.loadedMeetings.find(meeting => {
+        updateMeeting (state, payload){
+            const meeting = state.loadedMeetings.find(meeting=>{
                 return meeting.id === payload.id
             })
-            if (payload.title) {
+            if (payload.title){
                 meeting.title = payload.title
             }
-            if (payload.description) {
+            if (payload.description){
                 meeting.description = payload.description
             }
-            if (payload.date) {
+            if (payload.date){
                 meeting.date = payload.date
             }
-        },
-        createReview(state, payload) {
-            state.loadedReviews.push(payload)
-        },
-        setLoadedReview(state, payload) {
-            state.loadedReviews = payload
-        },
-        setCreatedReviewKey(state, payload) {
-            state.createdReviewKey = payload
         }
+
     },
     actions: {
         registerUserForMeeting({commit, getters}, payload) {
@@ -77,11 +68,11 @@ export const store = new Vuex.Store({
             const user = getters.user;
             firebase.database().ref('/users/' + user.id).child('/registrations')
                 .push(payload)
-                .then(data => {
+                .then(data =>{
                     commit('setLoading', false)
                     commit('registerUserForMeeting', {id: payload, fbKey: data.key})
                 })
-                .catch(error => {
+                .catch(error =>{
                     console.log(error)
                     commit('setLoading', false)
                 })
@@ -89,28 +80,28 @@ export const store = new Vuex.Store({
         unregisterUserFromMeeting({commit, getters}, payload) {
             commit('setLoading', true)
             const user = getters.user
-            if (!user.fbKeys) {
+            if (!user.fbKeys){
                 return
             }
             const fbKey = user.fbKeys[payload]
             firebase.database().ref('/users/' + user.id + '/registrations/').child(fbKey)
                 .remove()
-                .then(() => {
+                .then(() =>{
                     commit('setLoading', false)
                     commit('unregisterUserFromMeeting', payload)
                 })
-                .catch(error => {
+                .catch(error =>{
                     console.log(error)
                     commit('setLoading')
                 })
         },
-        loadMeetings({commit}) {
+        loadMeetings({commit}){
             commit('setLoading', true)
             firebase.database().ref('meetings').once('value')
-                .then((data) => {
-                    const meetings = []
+                .then((data)=>{
+                    const meetings =[]
                     const obj = data.val()
-                    for (let key in obj) {
+                    for(let key in obj){
                         meetings.push({
                             id: key,
                             title: obj[key].title,
@@ -124,12 +115,12 @@ export const store = new Vuex.Store({
                     commit('setLoadedMeeting', meetings)
                     commit('setLoading', false)
                 })
-                .catch((error) => {
+                .catch((error)=>{
                     console.log(error)
                     commit('setLoading', false)
                 })
         },
-        createMeeting({commit, getters}, payload) {
+        createMeeting ({commit, getters}, payload){
             const meeting = {
                 title: payload.title,
                 location: payload.location,
@@ -141,11 +132,11 @@ export const store = new Vuex.Store({
             let imageUrl
             let key
             firebase.database().ref('meetings').push(meeting)
-                .then((data) => {
+                .then((data)=>{
                     const key = data.key
                     return key
                 })
-                .then(key => {
+                .then(key=>{
                     const filename = payload.image.name
                     const ext = filename.slice(filename.lastIndexOf('.'))
                     commit('setCreatedMeetingKey', key)
@@ -160,32 +151,32 @@ export const store = new Vuex.Store({
                     key = getters.createdMeetingKey
                     return firebase.database().ref('meetings').child(key).update({imageUrl: imageUrl})
                 })
-                .then(() => {
+                .then(()=>{
                     commit('createMeeting', {
                         ...meeting,
                         imageUrl: imageUrl,
                         id: key
                     })
                 })
-                .catch((error) => {
+                .catch((error)=>{
                     console.log(error)
                 })
             //reach out to firebase and store it
         },
-        updateMeetingData({commit}, payload) {
+        updateMeetingData({commit}, payload){
             commit('setLoading', true)
             const updateObj = {}
-            if (payload.title) {
+            if(payload.title){
                 updateObj.title = payload.title
             }
-            if (payload.description) {
+            if(payload.description){
                 updateObj.description = payload.description
             }
-            if (payload.date) {
+            if(payload.date){
                 updateObj.date = payload.date
             }
             firebase.database().ref('meetings').child(payload.id).update(updateObj)
-                .then(() => {
+                .then(()=>{
                     commit('updateMeeting', payload)
                     commit('setLoading', false)
                 })
@@ -194,75 +185,14 @@ export const store = new Vuex.Store({
                     commit('setLoading', false)
                 })
         },
-        loadReviews({commit}) {
-            commit('setLoading', true)
-            firebase.database().ref('reviews').once('value')
-                .then((data) => {
-                    const reviews = []
-                    const obj = data.val()
-                    for (let key in obj) {
-                        reviews.push({
-                            id: key,
-                            title: obj[key].title,
-                            description: obj[key].description,
-                            rating: obj[key].rating,
-                            date: obj[key].date,
-                            location: obj[key].location,
-                            creatorID: obj[key].creatorID,
-                        })
-                    }
-                    commit('setLoadedReview', reviews)
-                    commit('setLoading', false)
-                })
-                .catch((error) => {
-                    console.log(error)
-                    commit('setLoading', false)
-                })
-        },
-        createReview({commit, getters}, payload) {
-            const review = {
-                title: payload.title,
-                location: payload.location,
-                description: payload.description,
-                rating: payload.rating,
-                date: payload.date.toISOString(),
-                creatorID: getters.user.id,
-                createdReviewKey: '',
-            }
-
-            let key
-            firebase.database().ref('reviews').push(review)
-                .then((data) => {
-                    const key = data.key
-                    return key
-                })
-                .then(key => {
-                    //const filename = payload.image.name
-                    //const ext = filename.slice(filename.lastIndexOf('.'))
-                    commit('setCreatedReviewKey', key)
-                    //return firebase.storage().ref('meetings/' + key + '.' + ext).put(payload.image)
-                })
-
-                .then(() => {
-                    commit('createReview', {
-                        ...review,
-
-                        id: key
-                    })
-                })
-                .catch((error) => {
-                    console.log(error)
-                })
-            //reach out to firebase and store it
-        },
-        signUserUp({commit}, payload) {
+        signUserUp({commit}, payload){
             commit('setLoading', true)
             commit('clearError')
             firebase.auth().createUserWithEmailAndPassword(payload.email, payload.password)
                 .then(
                     user => {
                         commit('setLoading', false)
-                        const newUser = {
+                        const newUser ={
                             id: user.user.uid,
                             registeredMeetings: [],
                             fbKeys: {}
@@ -278,14 +208,14 @@ export const store = new Vuex.Store({
                     }
                 )
         },
-        signUserIn({commit}, payload) {
+        signUserIn({commit}, payload){
             commit('setLoading', true)
             commit('clearError')
             firebase.auth().signInWithEmailAndPassword(payload.email, payload.password)
                 .then(
                     user => {
                         commit('setLoading', false)
-                        const newUser = {
+                        const newUser ={
                             id: user.user.uid,
                             registeredMeetings: [],
                             fbKeys: {}
@@ -301,17 +231,17 @@ export const store = new Vuex.Store({
                     }
                 )
         },
-        autoSignIn({commit}, payload) {
+        autoSignIn({commit}, payload){
             commit('setUser', {
                 id: payload.uid,
                 registeredMeetings: [],
                 fbKeys: {}
             })
         },
-        fetchUserData({commit, getters}) {
+        fetchUserData ({commit, getters}){
             commit('setLoading', true)
             firebase.database().ref('/users/' + getters.user.id + '/registrations/').once('value')
-                .then(data => {
+                .then(data =>{
                     const values = data.val()
                     let registeredMeetings = []
                     let swappedPairs = {}
@@ -327,31 +257,32 @@ export const store = new Vuex.Store({
                     commit('setLoading', false)
                     commit('setUser', updatedUser)
                 })
-                .catch(error => {
+                .catch(error =>{
                         console.log(error)
                         commit('setLoading', false)
                     }
+
                 )
         },
-        logout({commit}) {
+        logout({commit}){
             firebase.auth().signOut()
             commit('setUser', null)
         },
-        clearError({commit}) {
+        clearError({commit}){
             commit('clearError')
         }
     },
-    getters: {
-        loadedMeetings(state) {
+    getters:{
+        loadedMeetings(state){
             return state.loadedMeetings.sort((meetingA, meetingB) => {
                 return meetingA.date > meetingB.date
             })
         },
-        featuredMeetings(state, getters) {
+        featuredMeetings(state, getters){
             return getters.loadedMeetings.slice(0, 5)
         },
-        loadedMeeting(state) {
-            return (meetingId) => {
+        loadedMeeting(state){
+            return(meetingId) =>{
                 return state.loadedMeetings.find((meeting) => {
                     return meeting.id == meetingId
                 })
@@ -360,29 +291,14 @@ export const store = new Vuex.Store({
         user(state) {
             return state.user
         },
-        loading(state) {
+        loading(state){
             return state.loading
         },
-        error(state) {
+        error(state){
             return state.error
         },
-        createdMeetingKey(state) {
+        createdMeetingKey (state) {
             return state.createdMeetingKey
-        },
-        loadedReviews(state) {
-            return state.loadedReviews.sort((reviewA, reviewB) => {
-                return reviewA.date > reviewB.date
-            })
-        },
-        loadedReview(state) {
-            return (reviewId) => {
-                return state.loadedReviews.find((review) => {
-                    return review.id == reviewId
-                })
-            }
-        },
-        createdReviewKey(state) {
-            return state.createdReviewKey
         }
 
     }
