@@ -3,6 +3,8 @@ import VueRouter from 'vue-router'
 import home from '../components/home'
 import Meetings from '../components/Meetings/Meeting'
 import CreateMeeting from '../components/Meetings/CreateMeeting'
+import Reviews from '../components/Reviews/Reviews'
+import CreateReview from '../components/Reviews/CreateReview'
 import Profile from '../components/User/Profile'
 import Signup from '../components/User/Signup'
 import Signin from '../components/User/Signin'
@@ -31,9 +33,20 @@ export default new VueRouter({
       component: Meetings
     },
     {
+      path: '/reviews',
+      name: 'Reviews',
+      component: Reviews
+    },
+    {
       path: '/createMeeting',
       name: 'CreateMeeting',
       component: CreateMeeting,
+      beforeEnter: AuthGuard
+    },
+    {
+      path: '/createReview',
+      name: 'CreateReview',
+      component: CreateReview,
       beforeEnter: AuthGuard
     },
     {
