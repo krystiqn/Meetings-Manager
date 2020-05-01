@@ -49,6 +49,7 @@ new Vue({
       }
     })
     this.$store.dispatch('loadMeetings')
+    this.$store.dispatch('loadReviews')
   }
 }).$mount('#app')
 
