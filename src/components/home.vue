@@ -1,21 +1,15 @@
 <template>
     <v-container>
-        <v-layout row wrap class>
-            <v-flex  sm3 class="text-center ">
-                <v-btn large router to ="/meetings" color="lime lighten-4">Explore Meetings</v-btn>
-            </v-flex>
-            <v-flex  sm3 class="text-center ">
-                <v-btn large router to ="createMeeting" color="lime lighten-4">Organize Meeting</v-btn>
-            </v-flex>
-            <v-flex  sm3 class="text-center ">
-                <v-btn large router to ="/reviews" color="lime lighten-4">View Reviews</v-btn>
-            </v-flex>
-            <v-flex  sm3 class="text-center ">
-                <v-btn large router to ="createReview" color="lime lighten-4">Create Review</v-btn>
-            </v-flex>
-        </v-layout>
+
+            <div class="text-center">
+                <v-btn router to="/meetings" color="lime lighten-4" class="ma-2">Explore Meetings</v-btn>
+                <v-btn router to="createMeeting" color="lime lighten-4" class="ma-2">Organize Meeting</v-btn>
+                <v-btn router to="/reviews" color="lime lighten-4" class="ma-2">View Reviews</v-btn>
+                <v-btn router to="createReview" color="lime lighten-4" class="ma-2">Create Review</v-btn>
+            </div>
+
         <v-layout>
-            <v-flex xs12 class ="loadingCircle">
+            <v-flex xs12 class="loadingCircle">
                 <v-progress-circular indeterminate color="lime" :width="7" :size="70" v-if="loading">
 
                 </v-progress-circular>
@@ -31,7 +25,7 @@
                             reverse-transition="fade-transition"
                             transition="fade-transition"
                             @click.native="onLoadMeeting(meeting.id)">
-                        <div class ="title">
+                        <div class="title">
                             {{meeting.title}}
                         </div>
                     </v-carousel-item>
@@ -47,13 +41,13 @@
             meetings: function () {
                 return this.$store.getters.featuredMeetings
             },
-            loading: function() {
+            loading: function () {
                 return this.$store.getters.loading
             }
 
         },
         methods: {
-            onLoadMeeting(id){
+            onLoadMeeting(id) {
                 this.$router.push('/meetings/' + id);
 
             }
@@ -62,7 +56,7 @@
 </script>
 
 <style scoped>
-    .title{
+    .title {
         text-align: center;
         bottom: 50px;
         background-color: rgba(0, 0, 0, 0.3);
@@ -71,7 +65,8 @@
         padding: 20px;
         text-align: center;
     }
-    .loadingCircle{
+
+    .loadingCircle {
         text-align: center;
     }
 </style>
