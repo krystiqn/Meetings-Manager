@@ -36,7 +36,7 @@ new Vue({
   render: h => h(App),
   created () {
     firebase.initializeApp({
-      apiKey: 'AIzaSyBaBm6s-hNrbJViXxtYDGhCHnLo9_eqOKs',
+      apiKey: 'AAIzaSyBgXIx-n0nMHD6c5sXSl4b3V2QD6BX0MfI',
       authDomain: 'meetingsmanager-c33a9.firebaseapp.com',
       databaseURL: 'https://meetingsmanager-c33a9.firebaseio.com',
       projectId: 'meetingsmanager-c33a9',
