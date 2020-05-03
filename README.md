@@ -6,6 +6,8 @@ Future updates:
 - adding the possibility of inviting friends and inviting only selected people to meetings
 - group restrictions of people who can sign up for an event
 
+Feel free to share with us your opinion, next updates coming soon :) 
+
 ## Project setup
 ```
 npm install
