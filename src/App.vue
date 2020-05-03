@@ -125,31 +125,27 @@
     watch: {
       user: {
         handler: function (value) {
-          if (value !== null) {
-            if (value.registeredMeetings.length > 0) {
-              value.registeredMeetings.forEach(meeting => {
-                firebase.database().ref('meetings').once('value')
-                        .then((data)=>{
-                          const today = this.formatDate(new Date())
-                          const obj = data.val()
-                          for(let key in obj){
-                            if (meeting === key && obj[key].date.substring(0, 10) === today) {
-                              this.meetings.push({
-                                title: obj[key].title,
-                                date: obj[key].date.substring(11, 16),
-                                location: obj[key].location
-                              })
-                            }
+          if (value.registeredMeetings.length > 0) {
+            value.registeredMeetings.forEach(meeting => {
+              firebase.database().ref('meetings').once('value')
+                      .then((data)=>{
+                        const today = this.formatDate(new Date())
+                        const obj = data.val()
+                        for(let key in obj){
+                          if (meeting === key && obj[key].date.substring(0, 10) === today) {
+                            this.meetings.push({
+                              title: obj[key].title,
+                              date: obj[key].date.substring(11, 16),
+                              location: obj[key].location
+                            })
                           }
-                          if (this.meetings.length > 0) {
-                            this.meetingReminderVisibility = true
-                          }
-                        })
-                        .catch((error)=>{
-                          console.log(error)
-                        })
-              })
-            }
+                        }
+                        this.meetingReminderVisibility = true
+                      })
+                      .catch((error)=>{
+                        console.log(error)
+                      })
+            })
           }
         },
         deep: true
