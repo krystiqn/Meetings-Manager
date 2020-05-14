@@ -23,7 +23,7 @@ Vue.component('app-meeting-register-dialog', RegisterDialog)
 
 Vue.use(VueGoogleMaps, {
   load: {
-    key: "",
+    key: "AIzaSyBgXIx-n0nMHD6c5sXSl4b3V2QD6BX0MfI",
     libraries: "places",
     v: 3.38
   }
@@ -37,7 +37,7 @@ new Vue({
   created () {
     firebase.initializeApp({
 
-      apiKey: 'AIzaSyBgXIx-n0MHD6c5sXSl4b3V2QD6BX0MfI',
+      apiKey: 'AIzaSyBaBm6s-hNrbJViXxtYDGhCHnLo9_eqOKs',
       authDomain: 'meetingsmanager-c33a9.firebaseapp.com',
       databaseURL: 'https://meetingsmanager-c33a9.firebaseio.com',
       projectId: 'meetingsmanager-c33a9',
