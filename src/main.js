@@ -37,11 +37,11 @@ new Vue({
   created () {
     firebase.initializeApp({
 
-      apiKey: 'AIzaSyBaBm6s-hNrbJViXxtYDGhCHnLo9_eqOKs',
-      authDomain: 'meetingsmanager-c33a9.firebaseapp.com',
-      databaseURL: 'https://meetingsmanager-c33a9.firebaseio.com',
-      projectId: 'meetingsmanager-c33a9',
-      storageBucket: 'meetingsmanager-c33a9.appspot.com',
+      apiKey: 'AIzaSyBMmrQxbK94voaSDs9nKoDLAFR7J7QrW8k',
+      authDomain: 'proba-c6835.firebaseapp.com',
+      databaseURL: 'https://proba-c6835.firebaseio.com',
+      projectId: 'proba-c6835',
+      storageBucket: 'proba-c6835.appspot.com',
     })
     firebase.auth().onAuthStateChanged((user)=> {
       if (user){
